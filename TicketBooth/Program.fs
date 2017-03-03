@@ -15,11 +15,17 @@ open Suave.Operators
 open Suave.RequestErrors
 open Suave.Successful
 
+type private AppSettings = FSharp.Configuration.AppSettings<"app.config">
+
 module Program =
 
     [<EntryPoint>]
     let main argv = 
-        let service = new ThunderTix.Service (argv.[0], argv.[1])
+        let credentials = AppSettings.ServiceAccountUsername, AppSettings.ServiceAccountPassword
+        if credentials = ("XXX", "XXX") then
+            failwith "You should enter some ThunderTix service account credentials in app.config."
+
+        let service = new ThunderTix.Service(credentials)
 
         let test (ctx: HttpContext) = 
             match ctx.request.formData "event_name", ctx.request.formData "barcode" with

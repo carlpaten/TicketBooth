@@ -70,6 +70,10 @@
     <None Include="make_sqlite_db.cmd" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Configuration">
+      <HintPath>..\packages\FSharp.Configuration.0.6.4\lib\net40\FSharp.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FSharp.Core">
       <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
@@ -83,6 +87,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="SharpYaml">
+      <HintPath>..\packages\FSharp.Configuration.0.6.4\lib\net40\SharpYaml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Suave">
       <HintPath>..\packages\Suave.2.0.4\lib\net40\Suave.dll</HintPath>
       <Private>True</Private>
