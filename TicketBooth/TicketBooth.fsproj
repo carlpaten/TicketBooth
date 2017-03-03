@@ -60,7 +60,9 @@
     <None Include="App.config" />
     <Content Include="packages.config" />
     <Compile Include="Util.fs" />
-    <Compile Include="ThunderTix.fs" />
+    <Compile Include="ThunderTix.Session.fs" />
+    <Compile Include="ThunderTix.Performance.fs" />
+    <Compile Include="ThunderTix.Service.fs" />
     <Compile Include="Sql.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
