@@ -1,17 +1,18 @@
 ﻿namespace OpenMind.TicketBooth.ThunderTix
 
-open FSharp.Data
-
 open System
 open System.Collections.Generic
 open System.Threading
 
-type Report = Csv of string
+open FSharp.Data
+
+type Report = Csv of CsvFile
 
 type ScanResult =
     | AlreadyScanned of DateTime * string
     | Success of string
     | NotFound
+
 
 type Service (user_name, password) =
     let sessions = Dictionary<_, _> ()
@@ -32,13 +33,15 @@ type Service (user_name, password) =
             // retrieve CSV file
             let url = response.["url"].AsString ()
             let csv_string = Http.RequestString (url)
+            let csv_parsed = CsvFile.Parse csv_string
 
             // delete CSV file from server
             let id = response.["download"].["download"].["id"].AsString ()
             let response = service_session.PostHtml (sprintf "/downloads/%s" id, ["_method", "delete"])
-
+            
             // return report
-            Csv csv_string
+            Csv csv_parsed
+
     member x.LogIn (user_name, password) =
         try
             sessions.[user_name] <- new Session(user_name, password)
@@ -47,31 +50,28 @@ type Service (user_name, password) =
         | e -> false
 
     member x.GetOrders event_name =
-        if true then
-            Csv <| System.IO.File.ReadAllText("..\..\orders.csv")
-        else
-            // First perform a search, then ask for the search results in CSV form.
-            let search_response =
-                service_session.PostHtml ("/all_orders",
-                    [
-                        "search_order_number", ""
-                        "search_start_date", "February 22, 2017 12:00 AM"
-                        "search_end_date", "March 01, 2017 11:59 PM"
-                        "commit", "Search"
-                        "search_payment_type", ""
-                        "search_agent", ""
-                        "search_first_name", ""
-                        "search_last_name", ""
-                        "search_email", ""
-                        "search_event", event_name
-                        "include_totals", "on"
-                        "show_tix_totals", "on"
-                    ])
-            // Ask for CSV results
-            let csv_generate_response = service_session.GetHtml("/orders/orders_csv")
+        // First perform a search, then ask for the search results in CSV form.
+        let search_response =
+            service_session.PostHtml ("/all_orders",
+                [
+                    "search_order_number", ""
+                    "search_start_date", "February 22, 2017 12:00 AM"
+                    "search_end_date", "March 01, 2017 11:59 PM"
+                    "commit", "Search"
+                    "search_payment_type", ""
+                    "search_agent", ""
+                    "search_first_name", ""
+                    "search_last_name", ""
+                    "search_email", ""
+                    "search_event", event_name
+                    "include_totals", "on"
+                    "show_tix_totals", "on"
+                ])
+        // Ask for CSV results
+        let csv_generate_response = service_session.GetHtml("/orders/orders_csv")
 
-            let report = get_report ()
-            report
+        let report = get_report ()
+        report
 
     member x.GetBarcodes event_name =
         let perf = performance event_name
@@ -99,4 +99,4 @@ type Service (user_name, password) =
             let typ = answer.[1]
             Success typ
         | other -> impossible ()
-        
+
