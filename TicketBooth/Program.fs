@@ -1,4 +1,4 @@
-﻿namespace OpenMind
+﻿namespace OpenMind.TicketBooth
 
 open System
 open System.Collections.Generic

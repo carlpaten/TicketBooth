@@ -1,4 +1,4 @@
-﻿namespace OpenMind
+﻿namespace OpenMind.TicketBooth
 
 open FSharp.Data
 open FSharp.Data.HttpRequestHeaders
