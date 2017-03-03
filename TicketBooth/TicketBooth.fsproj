@@ -65,6 +65,9 @@
     <Compile Include="ThunderTix.Service.fs" />
     <Compile Include="Sql.fs" />
     <Compile Include="Program.fs" />
+    <None Include="schema.sql" />
+    <None Include="sqlite.db" />
+    <None Include="make_sqlite_db.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -103,6 +106,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)$(OutDir)sqlite.db
+sqlite3 $(ProjectDir)$(OutDir)sqlite.db &lt; $(ProjectDir)schema.sql</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
