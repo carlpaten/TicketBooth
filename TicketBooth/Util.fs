@@ -29,7 +29,7 @@ let (|RegexContains|_|) pattern input =
         | 1 -> Some m.[0].Groups.[0].Value
         | n -> Some m.[0].Groups.[1].Value
 
-let (|RegexMustContain|) pattern input = 
+let regex_find pattern input =
     let m = Regex.Match(input, pattern)
     match m.Groups.Count with
     | 0 -> impossible ()

@@ -115,7 +115,7 @@ module ThunderTix =
             let event_page = service_session.GetHtml event_url
             let performance_button = event_page.CssSelect "a" |> Seq.find (fun elem -> elem.InnerText () = event_name)
             let performance_url = performance_button.Attribute "href" |> HtmlAttributeExtensions.Value
-            let (RegexMustContain @"^/barcode/reader\?performance_id=([0-9]+)" performance_id) = performance_url
+            let performance_id = regex_find @"^/barcode/reader\?performance_id=([0-9]+)" performance_url
             performance_id
 
     type Service (user_name, password) =
@@ -190,7 +190,7 @@ module ThunderTix =
             match answer.[0] with
             | RegexContains "ALREADY SCANNED" _ ->
                 let dt = answer.[1].Replace(" EST", "") |> DateTime.Parse
-                let (RegexMustContain @"by (.*) $" rep) = answer.[2]
+                let rep = regex_find @"by (.*) $" answer.[2]
                 AlreadyScanned (dt, rep)
             | RegexContains "SUCCESS!" _ ->
                 let typ = answer.[1]
