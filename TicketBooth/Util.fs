@@ -20,6 +20,9 @@ let memoize f =
              cache.[x] <- res
              res
 
+/// Key-Value Pair recognizer            
+let (|KVP|) (kvp: KeyValuePair<_, _>) = (kvp.Key, kvp.Value)
+
 let (|RegexContains|_|) pattern input =
     let m = Regex.Matches(input, pattern)
     match m.Count with
@@ -35,3 +38,6 @@ let regex_find pattern input =
     | 0 -> impossible ()
     | 1 -> m.Groups.[0].Value
     | n -> m.Groups.[1].Value
+
+module Map =
+    let keys m = Map.fold (fun (s: Set<_>) k v -> s.Add k) Set.empty m
