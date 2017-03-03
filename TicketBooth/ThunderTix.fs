@@ -192,6 +192,11 @@ module ThunderTix =
                 let report = get_report ()
                 report
 
+        member x.GetBarcodes event_name =
+            let perf = performance event_name
+            let response = service_session.GetHtml (sprintf "/reports/barcode_export/%s" perf.Id)
+            let report = get_report ()
+            report
         
         member x.Scan user_name event_name barcode =
             let session = sessions.[user_name]
