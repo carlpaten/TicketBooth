@@ -17,6 +17,8 @@ module ThunderTix =
         | Text body -> body
         | other -> impossible ()
 
+    type Report = Csv of string
+
     type ScanResult =
         | AlreadyScanned of DateTime * string
         | Success of string
@@ -124,6 +126,22 @@ module ThunderTix =
         let sessions = Dictionary<_, _> ()
         let performance = memoize (fun event_name -> new Performance(event_name, service_session))
 
+        let rec get_report () =
+            Thread.Sleep 1000
+            let response = service_session.GetJson("/downloads")
+            if response.["download"].["download"].["resource_file_name"] = JsonValue.Null then
+                get_report ()
+            else
+                // retrieve CSV file
+                let url = response.["url"].AsString ()
+                let csv_string = Http.RequestString (url)
+
+                // delete CSV file from server
+                let id = response.["download"].["download"].["id"].AsString ()
+                let response = service_session.PostHtml (sprintf "/downloads/%s" id, ["_method", "delete"])
+
+                // return report
+                Csv csv_string
         member x.LogIn (user_name, password) =
             try
                 sessions.[user_name] <- new Session(user_name, password)
@@ -133,7 +151,7 @@ module ThunderTix =
 
         member x.GetCsv credentials event_name =
             if true then
-                File.ReadAllText("..\..\orders.csv")
+                Csv <| File.ReadAllText("..\..\orders.csv")
             else
                 let session = sessions.[credentials]
                 // First perform a search, then ask for the search results in CSV form.
@@ -154,27 +172,11 @@ module ThunderTix =
                             "show_tix_totals", "on"
                         ])
                 // Ask for CSV results
-                let csv_generate_response = session.GetHtml("/orders/orders_csv")
+                let csv_generate_response = service_session.GetHtml("/orders/orders_csv")
 
-                // wait until the CSV file has been generated
-                let rec get_csv_url () =
-                    Thread.Sleep 1000
-                    let response = session.GetJson("/downloads")
-                    if response.["download"].["download"].["resource_file_name"] <> JsonValue.Null then
-                        response.["download"].["download"].["id"].AsString (), Uri(response.["url"].AsString ())
-                    else 
-                        get_csv_url ()
+                let report = get_report ()
+                report
 
-                let (id, csv_url) = get_csv_url ()
-
-                // retrieve CSV file
-                let csv_string = Http.RequestString (url = csv_url.AbsoluteUri)
-
-                // delete CSV file from server
-                let response = session.PostHtml (sprintf "/downloads/%s" id, ["_method", "delete"])
-
-                // return csv
-                csv_string
         
         member x.Scan user_name event_name barcode =
             let session = sessions.[user_name]
