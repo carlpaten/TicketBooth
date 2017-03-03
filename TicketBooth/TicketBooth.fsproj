@@ -63,7 +63,6 @@
     <Compile Include="ThunderTix.fs" />
     <Compile Include="Sql.fs" />
     <Compile Include="Program.fs" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">

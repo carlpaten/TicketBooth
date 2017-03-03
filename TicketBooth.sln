@@ -7,6 +7,12 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TicketBooth", "TicketBooth\
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MockTicketBooth", "MockTicketBooth\MockTicketBooth.fsproj", "{19C23C1A-FC34-4A2B-8856-E83D156B326F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A611E118-CF0B-4D05-BC28-13BA6D75432B}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
