@@ -120,10 +120,15 @@ module ThunderTix =
             let performance_id = regex_find @"^/barcode/reader\?performance_id=([0-9]+)" performance_url
             performance_id
 
-    type Service (user_name, password) =
-        let service_session = new Session(user_name, password)
 
+    type Service (user_name, password) =
         let sessions = Dictionary<_, _> ()
+
+        let service_session =
+            let s = new Session(user_name, password)
+            sessions.Add(user_name, s)
+            s
+        
         let performance = memoize (fun event_name -> new Performance(event_name, service_session))
 
         let rec get_report () =
