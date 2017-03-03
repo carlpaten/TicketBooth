@@ -165,14 +165,13 @@ module ThunderTix =
             with
             | e -> false
 
-        member x.GetCsv credentials event_name =
+        member x.GetOrders event_name =
             if true then
                 Csv <| File.ReadAllText("..\..\orders.csv")
             else
-                let session = sessions.[credentials]
                 // First perform a search, then ask for the search results in CSV form.
                 let search_response =
-                    session.PostHtml ("/all_orders",
+                    service_session.PostHtml ("/all_orders",
                         [
                             "search_order_number", ""
                             "search_start_date", "February 22, 2017 12:00 AM"
